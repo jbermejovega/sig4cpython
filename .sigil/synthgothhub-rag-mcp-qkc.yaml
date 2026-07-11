@@ -1,0 +1,57 @@
+version: SYNTHGOTHHUB_RAG_MCP_QKC_V1
+repository: jbermejovega/sigil4cpython
+upstream_policy: jbermejovega/sigilbook:.sigil/qkc-rag-mcp.yaml
+role: cpython_projection_and_adapter_boundary
+authority:
+  canonical_registry: jbermejovega/sigilbook
+  local_code_truth: git_history
+  author: Jara Juana Bermejo Vega
+  theory: SIGIL
+rag:
+  mode: source_bound_projection
+  local_first: true
+  provenance_required: true
+  immutable_ref_required: true
+  source_path_required: true
+  content_hash_required: true
+  retrieval_is_not_truth: true
+  may_index:
+    - cpython_runtime_surfaces
+    - sigil4py_adapters
+    - typed_build_witnesses
+    - tests_and_validation_traces
+  must_not:
+    - mirror_identity_from_sigilbook
+    - claim_cpython_upstream_authority
+    - promote_retrieval_to_canonical_truth
+mcp:
+  mode: bounded_typed_adapter
+  tools_are_projections: true
+  tools_are_not_authority: true
+  writes_require: [read_first, diff_first, branch, pull_request]
+qkc:
+  context_dependency_declared: true
+  uap_projection_required: true
+  strikk_validation_required: true
+  renormalization_flow_invariant: true
+invariants:
+  - PIORNALEGO_ES_CANON
+  - SAFE_REPLAY
+  - TRACE_PRESERVED
+  - PI_FIXED
+  - NO_IDENTITY_TRANSPORT
+  - NO_SECTION_COLLAPSE
+  - NO_PLURAL_COLLAPSE
+  - JJBV_TYPED
+  - QUNOTYPED
+relations:
+  - source: jbermejovega/sigilbook
+    type: canonical_registry_projects_to
+    target: jbermejovega/sigil4cpython
+  - source: jbermejovega/sigil4cpython
+    type: typed_adapter_projects_toward
+    target: CPython
+  - source: jbermejovega/sigil4cpython
+    type: publication_candidate_only
+    target: PyPI
+status: draft_pr_gated
