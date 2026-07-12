@@ -1,0 +1,82 @@
+name: SIGIL4CPython PYPL HPC OpenMPI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "Tools/sigil/**"
+      - ".github/workflows/sigil4cpython-hpc-openmpi.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Tools/sigil/**"
+      - ".github/workflows/sigil4cpython-hpc-openmpi.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    name: Contract and source-tree checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run focused tests
+        run: python Tools/sigil/test_sigil4cpython_hpc.py
+
+      - name: Verify source-tree contract
+        run: >-
+          python Tools/sigil/sigil4cpython_hpc.py
+          --require-source-tree
+          --json
+
+      - name: Parse static manifest
+        run: >-
+          python -c "import json, pathlib;
+          p=pathlib.Path('Tools/sigil/sigil4cpython_pypl_hpc_openmpi_v1.json');
+          d=json.loads(p.read_text());
+          assert d['contract_id']=='SIGIL4CPYTHON_PYPL_HPC_OPENMPI_V1';
+          assert d['hpc']['scheduler_mutation'] is False;
+          assert d['jarramplas']['identity_transport'] is False"
+
+  openmpi-smoke:
+    name: Explicit two-rank OpenMPI witness
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install OpenMPI runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes openmpi-bin libopenmpi-dev
+
+      - name: Install mpi4py adapter
+        run: python -m pip install "mpi4py>=3.1"
+
+      - name: Verify OpenMPI visibility
+        run: >-
+          python Tools/sigil/sigil4cpython_hpc.py
+          --require-source-tree
+          --require-openmpi
+
+      - name: Run finite rank witness
+        run: >-
+          mpiexec -n 2
+          python Tools/sigil/sigil4cpython_hpc.py
+          --mpi-smoke
