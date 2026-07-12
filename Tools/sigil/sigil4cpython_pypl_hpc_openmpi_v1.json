@@ -1,0 +1,51 @@
+{
+  "schema_version": "sigil4cpython.pypl_hpc_openmpi.v1",
+  "contract_id": "SIGIL4CPYTHON_PYPL_HPC_OPENMPI_V1",
+  "repository": "jbermejovega/sigil4cpython",
+  "canonical_attribution": "JJBV",
+  "license_boundary": "PSF-2.0",
+  "pypl": {
+    "name": "SIG4PYPL",
+    "role": "internal_compiled_parallel_python_projection_profile",
+    "not_pypi": true,
+    "not_upstream_cpython_standard": true
+  },
+  "jarramplas": {
+    "kernel": "JARRAMPLAS_KERNEL",
+    "jarrampli": "local_typed_projection",
+    "identity_transport": false,
+    "plural_type_collapse": false
+  },
+  "hpc": {
+    "single_rank_fallback": true,
+    "openmp_optional": true,
+    "openmpi_optional": true,
+    "mpi4py_optional": true,
+    "scheduler_mutation": false,
+    "benchmark_required_for_performance_claim": true
+  },
+  "source_paths": [
+    "Tools/sigil/sigil4cpython_hpc.py",
+    "Tools/sigil/test_sigil4cpython_hpc.py",
+    "Tools/sigil/README.md",
+    ".github/workflows/sigil4cpython-hpc-openmpi.yml"
+  ],
+  "invariants": [
+    "PI_FIXED",
+    "SAFE_REPLAY",
+    "TRACE_PRESERVED",
+    "NO_IDENTITY_TRANSPORT",
+    "NO_PLURAL_COLLAPSE",
+    "NO_SCHEDULER_MUTATION",
+    "CPYTHON_UPSTREAM_BOUNDARY_PRESERVED",
+    "PSF_LICENSE_BOUNDARY_PRESERVED"
+  ],
+  "not_claimed": [
+    "upstream_CPython_acceptance",
+    "interpreter_semantics_changed",
+    "OpenMPI_present_on_every_host",
+    "cluster_scheduler_integration",
+    "parallel_speedup",
+    "scaling_efficiency"
+  ]
+}
