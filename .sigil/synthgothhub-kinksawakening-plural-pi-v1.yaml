@@ -1,0 +1,84 @@
+id: SYNTHGOTHHUB_KINKSAWAKENING_PLURAL_PI_ADAPTER_V1
+version: 1.0.0
+kind: repository_projection_policy
+status: draft_pr_gated
+repository: jbermejovega/sigil4cpython
+role: cpython_projection_and_runtime_adapter
+branch: feat/synthgothhub-rag-mcp-qkc-v1
+pull_request: 1
+
+authority:
+  canonical_repository: jbermejovega/sigilbook
+  canonical_policy: docs/policy/SYNTHGOTHHUB_RAG_MCP_N8N_COMPLIANCE_V1.md
+  canonical_resource: resources/rag/synthgothhub_kinksawakening_plural_pi_resource_v1.yaml
+  local_code_truth: git_history
+  cpython_upstream_authority_claimed: false
+  pypi_publication_claimed: false
+  tools_are_projections_not_authority: true
+
+rag:
+  mode: source_bound_projection
+  local_first: true
+  provenance_required: true
+  immutable_ref_path_and_hash_required: true
+  license_or_usage_descriptor_required: true
+  retrieval_is_not_truth: true
+  conflicts_remain_plural: true
+  may_index:
+    - sigil4py_adapters
+    - typed_build_witnesses
+    - tests_and_validation_traces
+    - plural_pi_projection_metadata
+
+mcp:
+  mode: bounded_typed_adapter
+  mutation: false
+  repository_writes: false
+  external_execution: false
+  network_downloads: false
+
+runtime:
+  native_build_or_install: false
+  stable_diffusion_execution: false
+  sonic_pi_audio_playback: false
+  benchmark_required_for_hpc_or_no_gil_claims: true
+  merge: false
+  release: false
+  pypi_publish: false
+
+typed_sections:
+  - QuasarPi
+  - PluralTyped
+  - QunoTypes
+  - MimbrePi
+  - LaurelPi
+  - StableDiffusion
+  - SonicPi
+  - Kuirkode
+
+aliases:
+  qunos: QunoTypes
+  stablediffussion: StableDiffusion
+  sonicpi: SonicPi
+  kuirkode: Kuirkode
+
+invariants:
+  - PIORNALEGO_ES_CANON
+  - SAFE_REPLAY
+  - TRACE_PRESERVED
+  - PI_FIXED
+  - NO_IDENTITY_TRANSPORT
+  - NO_IDENTITY_COLLAPSE
+  - NO_SECTION_COLLAPSE
+  - NO_PLURAL_COLLAPSE
+  - JJBV_TYPED
+  - QUNOTYPED
+  - LICENSE_PRESERVED
+  - HUMAN_REVIEW_REQUIRED
+
+claim_boundary:
+  policy_declared: true
+  adapter_implemented: false
+  native_runtime_executed: false
+  package_published: false
+  canonicalized: false
