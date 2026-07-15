@@ -1,0 +1,43 @@
+name: SIGIL4CPython UAP Wards
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Lib/sigil4cpython/**'
+      - 'Lib/test/test_sigil4cpython_uap_wards.py'
+      - 'Doc/library/sigil4cpython.rst'
+      - '.github/workflows/sigil4cpython-uap-wards.yml'
+  pull_request:
+    paths:
+      - 'Lib/sigil4cpython/**'
+      - 'Lib/test/test_sigil4cpython_uap_wards.py'
+      - 'Doc/library/sigil4cpython.rst'
+      - '.github/workflows/sigil4cpython-uap-wards.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  uap-wards:
+    name: Validate SIGIL4CPython UAP wards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run UAP ward tests
+        env:
+          PYTHONPATH: Lib
+        run: python -m unittest Lib/test/test_sigil4cpython_uap_wards.py -v
+
+      - name: Safe boundary notice
+        run: |
+          echo "SIGIL4CPython UAP wards validated."
+          echo "This CI validates metadata guardrails only."
+          echo "It does not change or certify CPython interpreter semantics."
