@@ -32,8 +32,10 @@ jobs:
           python-version: '3.11'
 
       - name: Run UAP ward tests
+        id: uap_tests
+        continue-on-error: true
         run: |
-          python - <<'PY'
+          python - <<'PY' > uap-ward-tests.log 2>&1
           import sys
           import unittest
 
@@ -47,6 +49,21 @@ jobs:
           result = unittest.TextTestRunner(verbosity=2).run(suite)
           raise SystemExit(0 if result.wasSuccessful() else 1)
           PY
+          cat uap-ward-tests.log
+
+      - name: Upload UAP diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sigil4cpython-uap-ward-test-log
+          path: uap-ward-tests.log
+          if-no-files-found: warn
+
+      - name: Fail on UAP obstruction
+        if: steps.uap_tests.outcome != 'success'
+        run: |
+          echo 'SIGIL4CPython UAP ward tests retained an obstruction.'
+          exit 1
 
       - name: Safe boundary notice
         run: |
