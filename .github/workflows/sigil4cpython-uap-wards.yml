@@ -36,18 +36,18 @@ jobs:
         continue-on-error: true
         run: |
           python - <<'PY' > uap-ward-tests.log 2>&1
+          import runpy
           import sys
-          import unittest
 
           # Append the experimental package after Python has initialized its own
-          # standard library. PYTHONPATH=Lib would shadow the runner stdlib with
-          # the CPython source checkout.
+          # standard library. Running the file directly avoids discovery rules
+          # tied to the CPython source checkout.
           sys.path.append('Lib')
-          suite = unittest.defaultTestLoader.discover(
-              'Lib/test', pattern='test_sigil4cpython_uap_wards.py'
+          sys.argv = ['Lib/test/test_sigil4cpython_uap_wards.py', '-v']
+          runpy.run_path(
+              'Lib/test/test_sigil4cpython_uap_wards.py',
+              run_name='__main__',
           )
-          result = unittest.TextTestRunner(verbosity=2).run(suite)
-          raise SystemExit(0 if result.wasSuccessful() else 1)
           PY
           cat uap-ward-tests.log
 
