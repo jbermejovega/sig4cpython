@@ -32,9 +32,38 @@ jobs:
           python-version: '3.11'
 
       - name: Run UAP ward tests
-        env:
-          PYTHONPATH: Lib
-        run: python -m unittest Lib/test/test_sigil4cpython_uap_wards.py -v
+        id: uap_tests
+        continue-on-error: true
+        run: |
+          python - <<'PY' > uap-ward-tests.log 2>&1
+          import runpy
+          import sys
+
+          # Append the experimental package after Python has initialized its own
+          # standard library. Running the file directly avoids discovery rules
+          # tied to the CPython source checkout.
+          sys.path.append('Lib')
+          sys.argv = ['Lib/test/test_sigil4cpython_uap_wards.py', '-v']
+          runpy.run_path(
+              'Lib/test/test_sigil4cpython_uap_wards.py',
+              run_name='__main__',
+          )
+          PY
+          cat uap-ward-tests.log
+
+      - name: Upload UAP diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sigil4cpython-uap-ward-test-log
+          path: uap-ward-tests.log
+          if-no-files-found: warn
+
+      - name: Fail on UAP obstruction
+        if: steps.uap_tests.outcome != 'success'
+        run: |
+          echo 'SIGIL4CPython UAP ward tests retained an obstruction.'
+          exit 1
 
       - name: Safe boundary notice
         run: |

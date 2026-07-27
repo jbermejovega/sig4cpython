@@ -1,0 +1,497 @@
+{
+  "report_id": "SIGIL4CPYTHON_PUBLICATION_SHEAF_20260727_V1",
+  "source": {
+    "repository": "jbermejovega/sigilbook",
+    "ref": "agent/qunotype-paca-flow-k-void-v1",
+    "commit_sha": "0545ca9945a66fdc9df5ed02cc9891861904c3a3",
+    "visibility": "private",
+    "role": "source_semantic_kernel_atlas"
+  },
+  "public_mirror": {
+    "repository": "jbermejovega/sigil4cpython",
+    "ref": "agent/strikk-kqc-publication-sheaf-v1",
+    "commit_sha": "ca45db2b58dfa2a8dbb867fad46734a7d435b068",
+    "visibility": "public",
+    "role": "experimental_public_projection"
+  },
+  "upstream": {
+    "repository": "python/cpython",
+    "ref": "main",
+    "commit_sha": "c7b9a13a7528342fdac47a2121248f0b989131e5",
+    "visibility": "public",
+    "role": "read_only_upstream_reference"
+  },
+  "kernels": [
+    {
+      "kernel_id": "SIGIL_SCHEMA_AOT",
+      "strategy": "SCHEMA_AOT",
+      "source_type": "SIGIL_PYDANTIC_MODEL",
+      "target_type": "JSON_SCHEMA_CERTIFICATE",
+      "context_id": "PIDANTIKAPI",
+      "backend": "PYDANTIC_V2",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "SCHEMA_COMPILATION_CONTEXT",
+        "quoquantum_type": "QQUAPP_SCHEMA_PROJECTION",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "sigil4py/src/sigil4py/typed_kernel_compiler.py"
+      ],
+      "dependency_ids": [],
+      "pullback_ids": ["pb:sigilbook:schema"],
+      "binding_kinds": ["PYDANTIC"],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 64,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    },
+    {
+      "kernel_id": "CPYTHON_BYTECODE_COMPILER",
+      "strategy": "BYTECODE_COMPILE",
+      "source_type": "PYTHON_SOURCE",
+      "target_type": "CPYTHON_BYTECODE",
+      "context_id": "CPYTHON_COMPILE_STAGE",
+      "backend": "CPYTHON_COMPILER",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "BYTECODE_CONTEXT",
+        "quoquantum_type": "QQUAPP_BYTECODE_VIEW",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "Python/compile.c",
+        "Python/codegen.c"
+      ],
+      "dependency_ids": ["SIGIL_SCHEMA_AOT"],
+      "pullback_ids": ["pb:cpython:compile"],
+      "binding_kinds": [],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 4096,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    },
+    {
+      "kernel_id": "CPYTHON_ADAPTIVE_INTERPRETER",
+      "strategy": "ADAPTIVE_INTERPRETER",
+      "source_type": "CPYTHON_BYTECODE",
+      "target_type": "TIER1_EXECUTION_STATE",
+      "context_id": "CPYTHON_RUNTIME_STAGE",
+      "backend": "CPYTHON_ADAPTIVE_INTERPRETER",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "ADAPTIVE_RUNTIME_CONTEXT",
+        "quoquantum_type": "QQUAPP_INTERPRETER_VIEW",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "Python/ceval.c",
+        "Python/bytecodes.c"
+      ],
+      "dependency_ids": ["CPYTHON_BYTECODE_COMPILER"],
+      "pullback_ids": ["pb:cpython:runtime"],
+      "binding_kinds": [],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 100000,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    },
+    {
+      "kernel_id": "CPYTHON_EXPERIMENTAL_JIT",
+      "strategy": "EXPERIMENTAL_JIT",
+      "source_type": "TIER1_EXECUTION_STATE",
+      "target_type": "JIT_EXECUTOR",
+      "context_id": "CPYTHON_EXPERIMENTAL_JIT_STAGE",
+      "backend": "CPYTHON_JIT",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "TRACE_AND_UOP_CONTEXT",
+        "quoquantum_type": "QQUAPP_JIT_VIEW",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "Python/optimizer.c",
+        "Python/jit.c",
+        "Tools/jit"
+      ],
+      "dependency_ids": ["CPYTHON_ADAPTIVE_INTERPRETER"],
+      "pullback_ids": ["pb:cpython:jit"],
+      "binding_kinds": [],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 100000,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    },
+    {
+      "kernel_id": "NUMBA_EXTERNAL_JIT_PROFILE",
+      "strategy": "EXTERNAL_JIT",
+      "source_type": "PYTHON_FUNCTION",
+      "target_type": "NATIVE_SPECIALIZATION_CANDIDATE",
+      "context_id": "EXTERNAL_NUMBA_CONTEXT",
+      "backend": "NUMBA",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "EXTERNAL_JIT_CONTEXT",
+        "quoquantum_type": "QQUAPP_EXTERNAL_JIT_VIEW",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "external:numba"
+      ],
+      "dependency_ids": [],
+      "pullback_ids": ["pb:external:jit"],
+      "binding_kinds": ["OPTIONAL_EXTERNAL"],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 2048,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    },
+    {
+      "kernel_id": "C_EXTENSION_AOT_PROFILE",
+      "strategy": "NATIVE_AOT",
+      "source_type": "C_TYPED_IR",
+      "target_type": "NATIVE_EXTENSION_CANDIDATE",
+      "context_id": "SIGIL4CPYTHON_NATIVE_CONTEXT",
+      "backend": "C_COMPILER",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "NATIVE_AOT_CONTEXT",
+        "quoquantum_type": "QQUAPP_C_EXTENSION_VIEW",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "Modules",
+        "Include"
+      ],
+      "dependency_ids": [],
+      "pullback_ids": ["pb:native:aot"],
+      "binding_kinds": ["CPYTHON_C_API"],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 8192,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    },
+    {
+      "kernel_id": "PYBIND11_BINDING_PROFILE",
+      "strategy": "PYBIND_BINDING",
+      "source_type": "NATIVE_EXTENSION_CANDIDATE",
+      "target_type": "PYTHON_BINDING_CANDIDATE",
+      "context_id": "EXTERNAL_PYBIND_CONTEXT",
+      "backend": "PYBIND11",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "BINDING_CONTEXT",
+        "quoquantum_type": "QQUAPP_PYBIND_VIEW",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "external:pybind11"
+      ],
+      "dependency_ids": ["C_EXTENSION_AOT_PROFILE"],
+      "pullback_ids": ["pb:native:binding"],
+      "binding_kinds": ["OPTIONAL_EXTERNAL"],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 4096,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    },
+    {
+      "kernel_id": "PYOMP_OPENMP_PROFILE",
+      "strategy": "OPENMP_BINDING",
+      "source_type": "C_TYPED_IR",
+      "target_type": "OPENMP_EXTENSION_CANDIDATE",
+      "context_id": "EXTERNAL_PYOMP_CONTEXT",
+      "backend": "PYOMP_OPENMP",
+      "kqc_type": {
+        "c_typed": true,
+        "q_typed": true,
+        "k_typed": true,
+        "context_type": "OPENMP_BINDING_CONTEXT",
+        "quoquantum_type": "QQUAPP_OPENMP_VIEW",
+        "no_identity_transport": true,
+        "no_plural_collapse": true
+      },
+      "source_paths": [
+        "external:pyomp"
+      ],
+      "dependency_ids": ["C_EXTENSION_AOT_PROFILE"],
+      "pullback_ids": ["pb:native:openmp"],
+      "binding_kinds": ["OPTIONAL_EXTERNAL"],
+      "resource_calls_bounded": true,
+      "max_resource_calls": 4096,
+      "runtime_execution_claimed": false,
+      "physical_execution_claimed": false
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "rel:bytecode:adaptive",
+      "kind": "DYNAMIC",
+      "source_ids": ["CPYTHON_BYTECODE_COMPILER"],
+      "target_ids": ["CPYTHON_ADAPTIVE_INTERPRETER"],
+      "context_id": "CPYTHON_RUNTIME_STAGE",
+      "witness_ids": ["witness:bytecode-boundary"],
+      "obstruction_ids": [],
+      "identity_transport": false
+    },
+    {
+      "relation_id": "rel:adaptive:jit",
+      "kind": "DYNAMIC",
+      "source_ids": ["CPYTHON_ADAPTIVE_INTERPRETER"],
+      "target_ids": ["CPYTHON_EXPERIMENTAL_JIT"],
+      "context_id": "CPYTHON_EXPERIMENTAL_JIT_STAGE",
+      "witness_ids": ["witness:trace-uop-executor"],
+      "obstruction_ids": [],
+      "identity_transport": false
+    },
+    {
+      "relation_id": "rel:native:pybind",
+      "kind": "PULLBACK",
+      "source_ids": ["C_EXTENSION_AOT_PROFILE"],
+      "target_ids": ["PYBIND11_BINDING_PROFILE"],
+      "context_id": "EXTERNAL_PYBIND_CONTEXT",
+      "witness_ids": ["pb:native:binding"],
+      "obstruction_ids": [],
+      "identity_transport": false
+    },
+    {
+      "relation_id": "rel:native:openmp",
+      "kind": "PULLBACK",
+      "source_ids": ["C_EXTENSION_AOT_PROFILE"],
+      "target_ids": ["PYOMP_OPENMP_PROFILE"],
+      "context_id": "EXTERNAL_PYOMP_CONTEXT",
+      "witness_ids": ["pb:native:openmp"],
+      "obstruction_ids": [],
+      "identity_transport": false
+    },
+    {
+      "relation_id": "rel:source:public",
+      "kind": "PUBLICATION",
+      "source_ids": ["jbermejovega/sigilbook"],
+      "target_ids": ["jbermejovega/sigil4cpython"],
+      "context_id": "PUBLIC_REPOSITORY_PROJECTION",
+      "witness_ids": ["hop:sigilbook:sigil4cpython"],
+      "obstruction_ids": ["source-selection-review-required"],
+      "identity_transport": false
+    },
+    {
+      "relation_id": "rel:public:upstream",
+      "kind": "PUBLICATION",
+      "source_ids": ["jbermejovega/sigil4cpython"],
+      "target_ids": ["python/cpython"],
+      "context_id": "UPSTREAM_CANDIDATE_PROJECTION",
+      "witness_ids": ["hop:sigil4cpython:cpython"],
+      "obstruction_ids": ["upstream-review-required"],
+      "identity_transport": false
+    }
+  ],
+  "pullbacks": [
+    {
+      "witness_id": "pb:sigilbook:schema",
+      "left_object": "SIGIL_SCHEMA_AOT",
+      "right_object": "jbermejovega/sigilbook",
+      "base_object": "STRIKK_KQC_PUBLICATION_SHEAF_V1",
+      "commutes": true,
+      "trace_id": "trace:pb:sigilbook:schema"
+    },
+    {
+      "witness_id": "pb:cpython:compile",
+      "left_object": "CPYTHON_BYTECODE_COMPILER",
+      "right_object": "SIGIL_SCHEMA_AOT",
+      "base_object": "PYTHON_SOURCE",
+      "commutes": true,
+      "trace_id": "trace:pb:cpython:compile"
+    },
+    {
+      "witness_id": "pb:cpython:runtime",
+      "left_object": "CPYTHON_ADAPTIVE_INTERPRETER",
+      "right_object": "CPYTHON_BYTECODE_COMPILER",
+      "base_object": "CPYTHON_BYTECODE",
+      "commutes": true,
+      "trace_id": "trace:pb:cpython:runtime"
+    },
+    {
+      "witness_id": "pb:cpython:jit",
+      "left_object": "CPYTHON_EXPERIMENTAL_JIT",
+      "right_object": "CPYTHON_ADAPTIVE_INTERPRETER",
+      "base_object": "TIER1_EXECUTION_STATE",
+      "commutes": true,
+      "trace_id": "trace:pb:cpython:jit"
+    },
+    {
+      "witness_id": "pb:external:jit",
+      "left_object": "NUMBA_EXTERNAL_JIT_PROFILE",
+      "right_object": "CPYTHON_ADAPTIVE_INTERPRETER",
+      "base_object": "PYTHON_FUNCTION",
+      "commutes": true,
+      "trace_id": "trace:pb:external:jit"
+    },
+    {
+      "witness_id": "pb:native:aot",
+      "left_object": "C_EXTENSION_AOT_PROFILE",
+      "right_object": "CPYTHON_BYTECODE_COMPILER",
+      "base_object": "KQC_NATIVE_BOUNDARY",
+      "commutes": true,
+      "trace_id": "trace:pb:native:aot"
+    },
+    {
+      "witness_id": "pb:native:binding",
+      "left_object": "PYBIND11_BINDING_PROFILE",
+      "right_object": "C_EXTENSION_AOT_PROFILE",
+      "base_object": "KQC_BINDING_BOUNDARY",
+      "commutes": true,
+      "trace_id": "trace:pb:native:binding"
+    },
+    {
+      "witness_id": "pb:native:openmp",
+      "left_object": "PYOMP_OPENMP_PROFILE",
+      "right_object": "C_EXTENSION_AOT_PROFILE",
+      "base_object": "KQC_OPENMP_BOUNDARY",
+      "commutes": true,
+      "trace_id": "trace:pb:native:openmp"
+    }
+  ],
+  "publication_hops": [
+    {
+      "hop_id": "hop:sigilbook:sigil4cpython",
+      "source_repository": "jbermejovega/sigilbook",
+      "target_repository": "jbermejovega/sigil4cpython",
+      "source_sha": "0545ca9945a66fdc9df5ed02cc9891861904c3a3",
+      "target_base_sha": "ca45db2b58dfa2a8dbb867fad46734a7d435b068",
+      "authority": "WRITE_OWN_REPOSITORY",
+      "required_reviews": [
+        "STRIKK",
+        "PYDANTIKA",
+        "PACAPDG",
+        "UAP",
+        "HUMAN"
+      ],
+      "copies_source_identity": false,
+      "direct_upstream_write": false
+    },
+    {
+      "hop_id": "hop:sigil4cpython:cpython",
+      "source_repository": "jbermejovega/sigil4cpython",
+      "target_repository": "python/cpython",
+      "source_sha": "ca45db2b58dfa2a8dbb867fad46734a7d435b068",
+      "target_base_sha": "c7b9a13a7528342fdac47a2121248f0b989131e5",
+      "authority": "PLAN_ONLY",
+      "required_reviews": [
+        "UPSTREAM_SCOPE_REDUCTION",
+        "CPYTHON_DEVGUIDE",
+        "CORE_REVIEW",
+        "NEWS_AND_TESTS"
+      ],
+      "copies_source_identity": false,
+      "direct_upstream_write": false
+    }
+  ],
+  "third_wheel_factors": [
+    {
+      "factor_id": "third-wheel:compiler-taxonomy",
+      "parent_id": "SIGIL_SCHEMA_AOT",
+      "left_id": "STATIC_COMPILER_BRANCH",
+      "right_id": "DYNAMIC_COMPILER_BRANCH",
+      "obstruction_id": "obstruction:compiler-strategy-selection",
+      "remaining_budget": 8,
+      "terminal": false
+    },
+    {
+      "factor_id": "third-wheel:native-bindings",
+      "parent_id": "C_EXTENSION_AOT_PROFILE",
+      "left_id": "PYBIND_BRANCH",
+      "right_id": "OPENMP_BRANCH",
+      "obstruction_id": "obstruction:native-binding-selection",
+      "remaining_budget": 4,
+      "terminal": false
+    }
+  ],
+  "harmonic_constraints": [
+    {
+      "object_id": "DECLARED_COMMUTATIVE_LCA_T2_HYPERGROUP_PROFILE",
+      "group_action_declared": true,
+      "locally_compact_t2": true,
+      "commutative_hyperoperation": true,
+      "signed_dual_declared": true,
+      "characters_separate_points": true,
+      "fourier_invertible": true,
+      "haar_plancherel_witnesses": [
+        "witness:haar",
+        "witness:plancherel",
+        "witness:character-separation"
+      ],
+      "claim_scope": "declared_model_only"
+    }
+  ],
+  "measurement_profiles": [
+    {
+      "profile_id": "Z_CHARACTER_DEMOLITION_OF_X_COHERENCE_V1",
+      "measured_basis": "Z_CHARACTER_TYPES",
+      "dual_basis": "X_SIGNED_CHARACTER_TYPES",
+      "repeatable_for_measured_basis": true,
+      "destroys_dual_coherence": true,
+      "demolition_for_dual_basis": true,
+      "physical_execution_claimed": false
+    }
+  ],
+  "tqft_profiles": [
+    {
+      "profile_id": "BUERSCHAPER_TYPED_MESSAGE_ROUTER_COHERENCE_V1",
+      "associativity_witness": "witness:associativity",
+      "pentagon_witness": "witness:pentagon",
+      "trace_cyclicity_witness": "witness:trace-cyclicity",
+      "three_cocycle_witness": "witness:normalized-3-cocycle",
+      "twisted_injection_witnesses": [
+        "witness:twisted-injection-void",
+        "witness:twisted-injection-vortex",
+        "witness:twisted-injection-alhambra"
+      ],
+      "pullback_ids": [
+        "pb:sigilbook:schema",
+        "pb:cpython:compile",
+        "pb:cpython:runtime",
+        "pb:cpython:jit",
+        "pb:native:aot",
+        "pb:native:binding",
+        "pb:native:openmp"
+      ],
+      "spatial_resource_claimed": false
+    }
+  ],
+  "replay_trace": [
+    "trace:source:sigilbook:pr530",
+    "trace:mirror:sigil4cpython:branch",
+    "trace:upstream:python-cpython:plan-only"
+  ],
+  "source_bound": true,
+  "strikk_type": "STRIKK::KQC_PUBLICATION_SHEAF",
+  "schema_id": "STRIKK_KQC_PUBLICATION_SHEAF_V1",
+  "pydantika_is_tooling_not_stdlib_dependency": true,
+  "discopy_is_optional_projection": true,
+  "lean4_is_proof_scaffold_not_kernel_proof": true,
+  "void_is_semantic_kernel_role_not_literal_K_dual": true,
+  "quotient_isomorphism_claimed": false,
+  "aperiodic_compression_theorem_claimed": false,
+  "human_review_required": true
+}
