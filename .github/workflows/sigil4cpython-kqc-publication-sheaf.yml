@@ -48,13 +48,23 @@ jobs:
           python -m compileall -q Tools/sigil4cpython
 
       - name: Run dependency-free contract tests
-        env:
-          PYTHONPATH: Lib
-        run: python -m unittest Lib/test/test_sigil4cpython_kqc_sheaf.py -v
+        run: |
+          python - <<'PY'
+          import sys
+          import unittest
+
+          # Append only the experimental package tree after the runner stdlib has
+          # initialized. Setting PYTHONPATH=Lib would shadow the runner's stdlib
+          # with this CPython source tree.
+          sys.path.append('Lib')
+          suite = unittest.defaultTestLoader.discover(
+              'Lib/test', pattern='test_sigil4cpython_kqc_sheaf.py'
+          )
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          raise SystemExit(0 if result.wasSuccessful() else 1)
+          PY
 
       - name: Run Pydantika and DisCoPy-plan tests
-        env:
-          PYTHONPATH: Lib
         run: python Tools/sigil4cpython/test_kqc_publication_models.py -v
 
       - name: Parse source-bound JSON
