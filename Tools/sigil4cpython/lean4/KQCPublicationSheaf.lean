@@ -80,7 +80,6 @@ structure KQCPublicationSheaf where
   sourceBound : Bool
   replayPreserved : Bool
   humanReviewRequired : Bool
-  deriving Repr
 
 
 def KQCKernelType.WellTyped (k : KQCKernelType) : Prop :=
