@@ -1,6 +1,6 @@
 """Strict Pydantika models for the SIGIL4CPython KQC publication sheaf.
 
-This tooling layer may depend on Pydantic.  It is intentionally not imported by
+This tooling layer may depend on Pydantic. It is intentionally not imported by
 ``Lib/sigil4cpython`` and is not proposed as a CPython standard-library
 dependency.
 """
@@ -9,14 +9,32 @@ from __future__ import annotations
 
 from hashlib import sha256
 import json
-from typing import Literal
+from typing import Annotated, Literal, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    model_validator,
+)
 
 
 SCHEMA_ID = "STRIKK_KQC_PUBLICATION_SHEAF_V1"
 STRIKK_TYPE = "STRIKK::KQC_PUBLICATION_SHEAF"
 SHA1_PATTERN = r"^[a-f0-9]{40}$"
+T = TypeVar("T")
+
+
+def _json_array_to_tuple(value: object) -> object:
+    """Accept JSON arrays while retaining immutable tuple storage."""
+
+    if isinstance(value, list):
+        return tuple(value)
+    return value
+
+
+StringTuple = Annotated[tuple[str, ...], BeforeValidator(_json_array_to_tuple)]
 
 
 class StrictModel(BaseModel):
@@ -79,10 +97,10 @@ class CompilerKernelModel(StrictModel):
     context_id: str = Field(min_length=1, max_length=192)
     backend: str = Field(min_length=1, max_length=192)
     kqc_type: KQCKernelTypeModel
-    source_paths: tuple[str, ...] = Field(min_length=1, max_length=256)
-    dependency_ids: tuple[str, ...] = Field(default=(), max_length=256)
-    pullback_ids: tuple[str, ...] = Field(default=(), max_length=256)
-    binding_kinds: tuple[str, ...] = Field(default=(), max_length=64)
+    source_paths: StringTuple = Field(min_length=1, max_length=256)
+    dependency_ids: StringTuple = Field(default=(), max_length=256)
+    pullback_ids: StringTuple = Field(default=(), max_length=256)
+    binding_kinds: StringTuple = Field(default=(), max_length=64)
     resource_calls_bounded: Literal[True] = True
     max_resource_calls: int = Field(ge=1, le=1_000_000)
     runtime_execution_claimed: Literal[False] = False
@@ -98,11 +116,11 @@ class CompilerKernelModel(StrictModel):
 class TypedRelationModel(StrictModel):
     relation_id: str = Field(min_length=1, max_length=192)
     kind: Literal["STATIC", "DYNAMIC", "PULLBACK", "TRANADA", "THIRD_WHEEL", "PUBLICATION"]
-    source_ids: tuple[str, ...] = Field(min_length=1, max_length=128)
-    target_ids: tuple[str, ...] = Field(min_length=1, max_length=128)
+    source_ids: StringTuple = Field(min_length=1, max_length=128)
+    target_ids: StringTuple = Field(min_length=1, max_length=128)
     context_id: str = Field(min_length=1, max_length=192)
-    witness_ids: tuple[str, ...] = Field(default=(), max_length=256)
-    obstruction_ids: tuple[str, ...] = Field(default=(), max_length=256)
+    witness_ids: StringTuple = Field(default=(), max_length=256)
+    obstruction_ids: StringTuple = Field(default=(), max_length=256)
     identity_transport: Literal[False] = False
 
     @model_validator(mode="after")
@@ -121,7 +139,7 @@ class PublicationHopModel(StrictModel):
     source_sha: str = Field(pattern=SHA1_PATTERN)
     target_base_sha: str = Field(pattern=SHA1_PATTERN)
     authority: Literal["WRITE_OWN_REPOSITORY", "OPEN_REVIEW_CANDIDATE", "PLAN_ONLY"]
-    required_reviews: tuple[str, ...] = Field(min_length=1, max_length=64)
+    required_reviews: StringTuple = Field(min_length=1, max_length=64)
     copies_source_identity: Literal[False] = False
     direct_upstream_write: Literal[False] = False
 
@@ -158,7 +176,7 @@ class HarmonicConstraintModel(StrictModel):
     signed_dual_declared: bool
     characters_separate_points: bool
     fourier_invertible: bool
-    haar_plancherel_witnesses: tuple[str, ...] = Field(default=(), max_length=128)
+    haar_plancherel_witnesses: StringTuple = Field(default=(), max_length=128)
     claim_scope: Literal["declared_model_only"] = "declared_model_only"
 
     @model_validator(mode="after")
@@ -196,9 +214,35 @@ class TQFTCoherenceProfileModel(StrictModel):
     pentagon_witness: str = Field(min_length=1, max_length=192)
     trace_cyclicity_witness: str = Field(min_length=1, max_length=192)
     three_cocycle_witness: str = Field(min_length=1, max_length=192)
-    twisted_injection_witnesses: tuple[str, ...] = Field(min_length=1, max_length=128)
-    pullback_ids: tuple[str, ...] = Field(min_length=1, max_length=128)
+    twisted_injection_witnesses: StringTuple = Field(min_length=1, max_length=128)
+    pullback_ids: StringTuple = Field(min_length=1, max_length=128)
     spatial_resource_claimed: Literal[False] = False
+
+
+KernelTuple = Annotated[
+    tuple[CompilerKernelModel, ...], BeforeValidator(_json_array_to_tuple)
+]
+RelationTuple = Annotated[
+    tuple[TypedRelationModel, ...], BeforeValidator(_json_array_to_tuple)
+]
+PullbackTuple = Annotated[
+    tuple[PullbackWitnessModel, ...], BeforeValidator(_json_array_to_tuple)
+]
+HopTuple = Annotated[
+    tuple[PublicationHopModel, ...], BeforeValidator(_json_array_to_tuple)
+]
+ThirdWheelTuple = Annotated[
+    tuple[ThirdWheelFactorModel, ...], BeforeValidator(_json_array_to_tuple)
+]
+HarmonicTuple = Annotated[
+    tuple[HarmonicConstraintModel, ...], BeforeValidator(_json_array_to_tuple)
+]
+MeasurementTuple = Annotated[
+    tuple[MeasurementProfileModel, ...], BeforeValidator(_json_array_to_tuple)
+]
+TQFTTuple = Annotated[
+    tuple[TQFTCoherenceProfileModel, ...], BeforeValidator(_json_array_to_tuple)
+]
 
 
 class KQCPublicationSheafModel(StrictModel):
@@ -206,15 +250,15 @@ class KQCPublicationSheafModel(StrictModel):
     source: RepositorySectionModel
     public_mirror: RepositorySectionModel
     upstream: RepositorySectionModel
-    kernels: tuple[CompilerKernelModel, ...] = Field(min_length=1, max_length=4096)
-    relations: tuple[TypedRelationModel, ...] = Field(default=(), max_length=8192)
-    pullbacks: tuple[PullbackWitnessModel, ...] = Field(default=(), max_length=4096)
-    publication_hops: tuple[PublicationHopModel, ...] = Field(min_length=2, max_length=16)
-    third_wheel_factors: tuple[ThirdWheelFactorModel, ...] = Field(default=(), max_length=4096)
-    harmonic_constraints: tuple[HarmonicConstraintModel, ...] = Field(default=(), max_length=4096)
-    measurement_profiles: tuple[MeasurementProfileModel, ...] = Field(default=(), max_length=4096)
-    tqft_profiles: tuple[TQFTCoherenceProfileModel, ...] = Field(default=(), max_length=4096)
-    replay_trace: tuple[str, ...] = Field(min_length=1, max_length=4096)
+    kernels: KernelTuple = Field(min_length=1, max_length=4096)
+    relations: RelationTuple = Field(default=(), max_length=8192)
+    pullbacks: PullbackTuple = Field(default=(), max_length=4096)
+    publication_hops: HopTuple = Field(min_length=2, max_length=16)
+    third_wheel_factors: ThirdWheelTuple = Field(default=(), max_length=4096)
+    harmonic_constraints: HarmonicTuple = Field(default=(), max_length=4096)
+    measurement_profiles: MeasurementTuple = Field(default=(), max_length=4096)
+    tqft_profiles: TQFTTuple = Field(default=(), max_length=4096)
+    replay_trace: StringTuple = Field(min_length=1, max_length=4096)
     source_bound: Literal[True] = True
     strikk_type: Literal[STRIKK_TYPE] = STRIKK_TYPE
     schema_id: Literal[SCHEMA_ID] = SCHEMA_ID
@@ -251,11 +295,28 @@ class KQCPublicationSheafModel(StrictModel):
         if any(not set(item.pullback_ids).issubset(known_pullbacks) for item in self.tqft_profiles):
             raise ValueError("tqft_unknown_pullback")
 
+        known_endpoints = set(kernel_ids)
+        known_endpoints.update(
+            {
+                self.source.repository,
+                self.public_mirror.repository,
+                self.upstream.repository,
+            }
+        )
+        if any(
+            not set(item.source_ids + item.target_ids).issubset(known_endpoints)
+            for item in self.relations
+        ):
+            raise ValueError("relation_unknown_endpoint")
+
         expected_hops = {
             ("jbermejovega/sigilbook", "jbermejovega/sigil4cpython"),
             ("jbermejovega/sigil4cpython", "python/cpython"),
         }
-        actual_hops = {(item.source_repository, item.target_repository) for item in self.publication_hops}
+        actual_hops = {
+            (item.source_repository, item.target_repository)
+            for item in self.publication_hops
+        }
         if actual_hops != expected_hops:
             raise ValueError("publication_chain_incomplete")
 
@@ -291,7 +352,9 @@ class PydantikaPublicationCertificate(StrictModel):
     human_review_required: Literal[True] = True
 
 
-def compile_pydantika_publication_sheaf(payload: dict[str, object]) -> PydantikaPublicationCertificate:
+def compile_pydantika_publication_sheaf(
+    payload: dict[str, object],
+) -> PydantikaPublicationCertificate:
     """Validate and round-trip one publication sheaf without publishing it."""
 
     model = KQCPublicationSheafModel.model_validate(payload)
