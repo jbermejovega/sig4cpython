@@ -1,9 +1,28 @@
-"""SIGIL4CPython experimental runtime wards.
+"""SIGIL4CPython experimental typed contracts.
 
-This package is intentionally small and pure Python.  It carries SIGIL/UAP
-guardrail metadata without changing CPython interpreter semantics.
+The package is intentionally pure Python and dependency-free. It carries
+SIGIL/UAP/KQC guardrail metadata without changing CPython interpreter semantics.
+Optional Pydantika and DisCoPy projections live under ``Tools/sigil4cpython``.
 """
 
+from .kqc_sheaf import (
+    CompilerKernel,
+    CompilerStrategy,
+    HarmonicConstraint,
+    KQCKernelType,
+    KQCPublicationSheaf,
+    MeasurementProfile,
+    PublicationAuthority,
+    PublicationHop,
+    PullbackWitness,
+    RelationKind,
+    RepositorySection,
+    TQFTCoherenceProfile,
+    ThirdWheelFactor,
+    TypedRelation,
+    UAPState,
+    compile_publication_sheaf,
+)
 from .uap_wards import (
     DEFAULT_CLAIM_BOUNDARY,
     KokompiledKernel,
@@ -16,12 +35,28 @@ from .uap_wards import (
 )
 
 __all__ = [
+    "CompilerKernel",
+    "CompilerStrategy",
     "DEFAULT_CLAIM_BOUNDARY",
+    "HarmonicConstraint",
+    "KQCKernelType",
+    "KQCPublicationSheaf",
     "KokompiledKernel",
+    "MeasurementProfile",
+    "PublicationAuthority",
+    "PublicationHop",
+    "PullbackWitness",
+    "RelationKind",
+    "RepositorySection",
+    "TQFTCoherenceProfile",
+    "ThirdWheelFactor",
+    "TypedRelation",
+    "UAPState",
     "UAPWard",
     "UAPWardVerdict",
     "build_pacadocencia_uap_kernel",
     "check_uap_wards",
+    "compile_publication_sheaf",
     "kokompile_kernel",
     "validate_kokompiled_kernel",
 ]
