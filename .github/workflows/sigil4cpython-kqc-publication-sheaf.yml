@@ -1,0 +1,78 @@
+name: SIGIL4CPython KQC publication sheaf
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Lib/sigil4cpython/kqc_sheaf.py'
+      - 'Lib/sigil4cpython/__init__.py'
+      - 'Lib/test/test_sigil4cpython_kqc_sheaf.py'
+      - 'Tools/sigil4cpython/**'
+      - 'Misc/sigil4cpython/kqc_publication_sheaf_v1.json'
+      - 'Misc/sigil4cpython/STRIKK_KQC_PUBLICATION_SHEAF_V1.md'
+      - 'Doc/library/sigil4cpython_kqc_sheaf.rst'
+      - '.github/workflows/sigil4cpython-kqc-publication-sheaf.yml'
+  pull_request:
+    paths:
+      - 'Lib/sigil4cpython/kqc_sheaf.py'
+      - 'Lib/sigil4cpython/__init__.py'
+      - 'Lib/test/test_sigil4cpython_kqc_sheaf.py'
+      - 'Tools/sigil4cpython/**'
+      - 'Misc/sigil4cpython/kqc_publication_sheaf_v1.json'
+      - 'Misc/sigil4cpython/STRIKK_KQC_PUBLICATION_SHEAF_V1.md'
+      - 'Doc/library/sigil4cpython_kqc_sheaf.rst'
+      - '.github/workflows/sigil4cpython-kqc-publication-sheaf.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate dependency-free and Pydantika sheaf layers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install tooling-only dependency
+        run: python -m pip install 'pydantic>=2.13,<3'
+
+      - name: Compile typed surfaces
+        run: |
+          python -m compileall -q Lib/sigil4cpython
+          python -m compileall -q Tools/sigil4cpython
+
+      - name: Run dependency-free contract tests
+        env:
+          PYTHONPATH: Lib
+        run: python -m unittest Lib/test/test_sigil4cpython_kqc_sheaf.py -v
+
+      - name: Run Pydantika and DisCoPy-plan tests
+        env:
+          PYTHONPATH: Lib
+        run: python Tools/sigil4cpython/test_kqc_publication_models.py -v
+
+      - name: Parse source-bound JSON
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('Misc/sigil4cpython/kqc_publication_sheaf_v1.json')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          assert payload['strikk_type'] == 'STRIKK::KQC_PUBLICATION_SHEAF'
+          assert payload['publication_hops'][1]['target_repository'] == 'python/cpython'
+          assert payload['publication_hops'][1]['authority'] == 'PLAN_ONLY'
+          assert payload['publication_hops'][1]['direct_upstream_write'] is False
+          print('source-bound publication schema parsed')
+          PY
+
+      - name: Authority boundary notice
+        run: |
+          echo 'This workflow validates finite metadata and proof obligations only.'
+          echo 'It does not copy sigilbook files or write to python/cpython.'
+          echo 'Pydantic is tooling-only and is not introduced as a stdlib dependency.'
