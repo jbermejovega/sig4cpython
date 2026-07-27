@@ -32,9 +32,21 @@ jobs:
           python-version: '3.11'
 
       - name: Run UAP ward tests
-        env:
-          PYTHONPATH: Lib
-        run: python -m unittest Lib/test/test_sigil4cpython_uap_wards.py -v
+        run: |
+          python - <<'PY'
+          import sys
+          import unittest
+
+          # Append the experimental package after Python has initialized its own
+          # standard library. PYTHONPATH=Lib would shadow the runner stdlib with
+          # the CPython source checkout.
+          sys.path.append('Lib')
+          suite = unittest.defaultTestLoader.discover(
+              'Lib/test', pattern='test_sigil4cpython_uap_wards.py'
+          )
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          raise SystemExit(0 if result.wasSuccessful() else 1)
+          PY
 
       - name: Safe boundary notice
         run: |
