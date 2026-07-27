@@ -52,18 +52,18 @@ jobs:
         continue-on-error: true
         run: |
           python - <<'PY' > kqc-dependency-free.log 2>&1
+          import runpy
           import sys
-          import unittest
 
           # Append only the experimental package tree after the runner stdlib has
-          # initialized. Setting PYTHONPATH=Lib would shadow the runner's stdlib
-          # with this CPython source tree.
+          # initialized. Running the test file directly avoids unittest discovery
+          # assumptions tied to this CPython source checkout.
           sys.path.append('Lib')
-          suite = unittest.defaultTestLoader.discover(
-              'Lib/test', pattern='test_sigil4cpython_kqc_sheaf.py'
+          sys.argv = ['Lib/test/test_sigil4cpython_kqc_sheaf.py', '-v']
+          runpy.run_path(
+              'Lib/test/test_sigil4cpython_kqc_sheaf.py',
+              run_name='__main__',
           )
-          result = unittest.TextTestRunner(verbosity=2).run(suite)
-          raise SystemExit(0 if result.wasSuccessful() else 1)
           PY
           cat kqc-dependency-free.log
 
