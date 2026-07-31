@@ -100,7 +100,6 @@ jobs:
             kqc-dependency-free.log
             kqc-pydantika.log
           if-no-files-found: warn
-          archive: false
 
       - name: Fail on test obstruction
         if: steps.dependency_free.outcome != 'success' || steps.pydantika.outcome != 'success'
