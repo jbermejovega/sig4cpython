@@ -8,12 +8,16 @@ from pydantic import ValidationError
 TOOLS_DIR = Path(__file__).resolve().parent
 ROOT = TOOLS_DIR.parents[1]
 sys.path.insert(0, str(TOOLS_DIR))
-sys.path.insert(0, str(ROOT / "Lib"))
 
 from hpc_localized_models import (  # noqa: E402
     HPCLocalizedKernelModel,
     compile_pydantika_hpc_localized_kernel,
 )
+
+# Add the experimental package only after Pydantika imports.  On GitHub
+# Actions this checkout's Lib/ can otherwise shadow the runner stdlib.
+sys.path.insert(0, str(ROOT / "Lib"))
+
 from sigil4cpython.hpc_localized_kernel import (  # noqa: E402
     build_hpc_localized_quazris_kernel,
 )

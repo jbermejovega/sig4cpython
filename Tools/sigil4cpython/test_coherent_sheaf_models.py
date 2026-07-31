@@ -8,12 +8,16 @@ from pydantic import ValidationError
 TOOLS_DIR = Path(__file__).resolve().parent
 ROOT = TOOLS_DIR.parents[1]
 sys.path.insert(0, str(TOOLS_DIR))
-sys.path.insert(0, str(ROOT / "Lib"))
 
 from coherent_sheaf_models import (
     PydantikaCoherentSheafModel,
     compile_pydantika_coherent_sheaf_model,
 )
+
+# Add the experimental package only after Pydantika imports.  On GitHub
+# Actions this checkout's Lib/ can otherwise shadow the runner stdlib.
+sys.path.insert(0, str(ROOT / "Lib"))
+
 from sigil4cpython.coherent_sheaf import build_pydantika_coherent_sheaf
 
 
