@@ -69,6 +69,7 @@ jobs:
         id: dependency_free
         continue-on-error: true
         run: |
+          set +e
           {
             for test_file in \
               Lib/test/test_sigil4cpython_kqc_sheaf.py \
@@ -92,19 +93,24 @@ jobs:
           PY
             done
           } > kqc-dependency-free.log 2>&1
+          status=$?
           cat kqc-dependency-free.log
+          exit "$status"
 
       - name: Run Pydantika, Quazris, and DisCoPy-plan tests
         id: pydantika
         continue-on-error: true
         run: |
+          set +e
           {
             python Tools/sigil4cpython/test_kqc_publication_models.py -v
             python Tools/sigil4cpython/test_virtual_io_models.py -v
             python Tools/sigil4cpython/test_coherent_sheaf_models.py -v
             python Tools/sigil4cpython/test_hpc_localized_models.py -v
           } > kqc-pydantika.log 2>&1
+          status=$?
           cat kqc-pydantika.log
+          exit "$status"
 
       - name: Parse source-bound JSON
         run: |
