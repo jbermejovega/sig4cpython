@@ -7,14 +7,17 @@ on:
       - 'Lib/sigil4cpython/coherent_sheaf.py'
       - 'Lib/sigil4cpython/hpc_localized_kernel.py'
       - 'Lib/sigil4cpython/kqc_sheaf.py'
+      - 'Lib/sigil4cpython/localization_polyglot.py'
       - 'Lib/sigil4cpython/virtual_io.py'
       - 'Lib/sigil4cpython/__init__.py'
       - 'Lib/test/test_sigil4cpython_coherent_sheaf.py'
       - 'Lib/test/test_sigil4cpython_hpc_localized_kernel.py'
       - 'Lib/test/test_sigil4cpython_kqc_sheaf.py'
+      - 'Lib/test/test_sigil4cpython_localization_polyglot.py'
       - 'Lib/test/test_sigil4cpython_virtual_io.py'
       - 'Tools/sigil4cpython/**'
       - 'docs/SIGIL4CPYTHON_HPC_LOCALIZED_QUAZRIS_FPGA_KERNELS_V1.md'
+      - 'docs/SIGIL4CPYTHON_POLYGLOT_LOCALIZATION_PIPELINES_V1.md'
       - 'docs/SIGIL4CPYTHON_PYDANTIKA_COHERENT_SHEAF_KERNELS_V1.md'
       - 'Misc/sigil4cpython/kqc_publication_sheaf_v1.json'
       - 'Misc/sigil4cpython/STRIKK_KQC_PUBLICATION_SHEAF_V1.md'
@@ -25,14 +28,17 @@ on:
       - 'Lib/sigil4cpython/coherent_sheaf.py'
       - 'Lib/sigil4cpython/hpc_localized_kernel.py'
       - 'Lib/sigil4cpython/kqc_sheaf.py'
+      - 'Lib/sigil4cpython/localization_polyglot.py'
       - 'Lib/sigil4cpython/virtual_io.py'
       - 'Lib/sigil4cpython/__init__.py'
       - 'Lib/test/test_sigil4cpython_coherent_sheaf.py'
       - 'Lib/test/test_sigil4cpython_hpc_localized_kernel.py'
       - 'Lib/test/test_sigil4cpython_kqc_sheaf.py'
+      - 'Lib/test/test_sigil4cpython_localization_polyglot.py'
       - 'Lib/test/test_sigil4cpython_virtual_io.py'
       - 'Tools/sigil4cpython/**'
       - 'docs/SIGIL4CPYTHON_HPC_LOCALIZED_QUAZRIS_FPGA_KERNELS_V1.md'
+      - 'docs/SIGIL4CPYTHON_POLYGLOT_LOCALIZATION_PIPELINES_V1.md'
       - 'docs/SIGIL4CPYTHON_PYDANTIKA_COHERENT_SHEAF_KERNELS_V1.md'
       - 'Misc/sigil4cpython/kqc_publication_sheaf_v1.json'
       - 'Misc/sigil4cpython/STRIKK_KQC_PUBLICATION_SHEAF_V1.md'
@@ -75,7 +81,8 @@ jobs:
               Lib/test/test_sigil4cpython_kqc_sheaf.py \
               Lib/test/test_sigil4cpython_virtual_io.py \
               Lib/test/test_sigil4cpython_coherent_sheaf.py \
-              Lib/test/test_sigil4cpython_hpc_localized_kernel.py
+              Lib/test/test_sigil4cpython_hpc_localized_kernel.py \
+              Lib/test/test_sigil4cpython_localization_polyglot.py
             do
               echo "=== ${test_file} ==="
               TEST_FILE="${test_file}" python - <<'PY'
@@ -107,6 +114,7 @@ jobs:
             python Tools/sigil4cpython/test_virtual_io_models.py -v
             python Tools/sigil4cpython/test_coherent_sheaf_models.py -v
             python Tools/sigil4cpython/test_hpc_localized_models.py -v
+            python Tools/sigil4cpython/test_localization_polyglot_models.py -v
           } > kqc-pydantika.log 2>&1
           status=$?
           cat kqc-pydantika.log
