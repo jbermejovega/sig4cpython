@@ -4,20 +4,36 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - 'Lib/sigil4cpython/coherent_sheaf.py'
+      - 'Lib/sigil4cpython/hpc_localized_kernel.py'
       - 'Lib/sigil4cpython/kqc_sheaf.py'
+      - 'Lib/sigil4cpython/virtual_io.py'
       - 'Lib/sigil4cpython/__init__.py'
+      - 'Lib/test/test_sigil4cpython_coherent_sheaf.py'
+      - 'Lib/test/test_sigil4cpython_hpc_localized_kernel.py'
       - 'Lib/test/test_sigil4cpython_kqc_sheaf.py'
+      - 'Lib/test/test_sigil4cpython_virtual_io.py'
       - 'Tools/sigil4cpython/**'
+      - 'docs/SIGIL4CPYTHON_HPC_LOCALIZED_QUAZRIS_FPGA_KERNELS_V1.md'
+      - 'docs/SIGIL4CPYTHON_PYDANTIKA_COHERENT_SHEAF_KERNELS_V1.md'
       - 'Misc/sigil4cpython/kqc_publication_sheaf_v1.json'
       - 'Misc/sigil4cpython/STRIKK_KQC_PUBLICATION_SHEAF_V1.md'
       - 'Doc/library/sigil4cpython_kqc_sheaf.rst'
       - '.github/workflows/sigil4cpython-kqc-publication-sheaf.yml'
   pull_request:
     paths:
+      - 'Lib/sigil4cpython/coherent_sheaf.py'
+      - 'Lib/sigil4cpython/hpc_localized_kernel.py'
       - 'Lib/sigil4cpython/kqc_sheaf.py'
+      - 'Lib/sigil4cpython/virtual_io.py'
       - 'Lib/sigil4cpython/__init__.py'
+      - 'Lib/test/test_sigil4cpython_coherent_sheaf.py'
+      - 'Lib/test/test_sigil4cpython_hpc_localized_kernel.py'
       - 'Lib/test/test_sigil4cpython_kqc_sheaf.py'
+      - 'Lib/test/test_sigil4cpython_virtual_io.py'
       - 'Tools/sigil4cpython/**'
+      - 'docs/SIGIL4CPYTHON_HPC_LOCALIZED_QUAZRIS_FPGA_KERNELS_V1.md'
+      - 'docs/SIGIL4CPYTHON_PYDANTIKA_COHERENT_SHEAF_KERNELS_V1.md'
       - 'Misc/sigil4cpython/kqc_publication_sheaf_v1.json'
       - 'Misc/sigil4cpython/STRIKK_KQC_PUBLICATION_SHEAF_V1.md'
       - 'Doc/library/sigil4cpython_kqc_sheaf.rst'
@@ -53,28 +69,41 @@ jobs:
         id: dependency_free
         continue-on-error: true
         run: |
-          python - <<'PY' > kqc-dependency-free.log 2>&1
+          {
+            for test_file in \
+              Lib/test/test_sigil4cpython_kqc_sheaf.py \
+              Lib/test/test_sigil4cpython_virtual_io.py \
+              Lib/test/test_sigil4cpython_coherent_sheaf.py \
+              Lib/test/test_sigil4cpython_hpc_localized_kernel.py
+            do
+              echo "=== ${test_file} ==="
+              TEST_FILE="${test_file}" python - <<'PY'
+          import os
           import runpy
           import sys
 
           # Append only the experimental package tree after the runner stdlib has
           # initialized. Running the test file directly avoids unittest discovery
           # assumptions tied to this CPython source checkout.
+          test_file = os.environ['TEST_FILE']
           sys.path.append('Lib')
-          sys.argv = ['Lib/test/test_sigil4cpython_kqc_sheaf.py', '-v']
-          runpy.run_path(
-              'Lib/test/test_sigil4cpython_kqc_sheaf.py',
-              run_name='__main__',
-          )
+          sys.argv = [test_file, '-v']
+          runpy.run_path(test_file, run_name='__main__')
           PY
+            done
+          } > kqc-dependency-free.log 2>&1
           cat kqc-dependency-free.log
 
-      - name: Run Pydantika and DisCoPy-plan tests
+      - name: Run Pydantika, Quazris, and DisCoPy-plan tests
         id: pydantika
         continue-on-error: true
         run: |
-          python Tools/sigil4cpython/test_kqc_publication_models.py -v \
-            > kqc-pydantika.log 2>&1
+          {
+            python Tools/sigil4cpython/test_kqc_publication_models.py -v
+            python Tools/sigil4cpython/test_virtual_io_models.py -v
+            python Tools/sigil4cpython/test_coherent_sheaf_models.py -v
+            python Tools/sigil4cpython/test_hpc_localized_models.py -v
+          } > kqc-pydantika.log 2>&1
           cat kqc-pydantika.log
 
       - name: Parse source-bound JSON
