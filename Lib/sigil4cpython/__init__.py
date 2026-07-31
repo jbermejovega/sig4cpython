@@ -33,6 +33,19 @@ from .uap_wards import (
     kokompile_kernel,
     validate_kokompiled_kernel,
 )
+from .vortice_twerk_sheaf import (
+    AUTHOR as VORTICE_TWERK_AUTHOR,
+    SCHEMA_ID as VORTICE_TWERK_SHEAF_SCHEMA_ID,
+    SOURCE_BRANCH as VORTICE_TWERK_SOURCE_BRANCH,
+    SOURCE_REPOSITORY as VORTICE_TWERK_SOURCE_REPOSITORY,
+    SOURCE_SHA as VORTICE_TWERK_SOURCE_SHA,
+    CoherentProjection,
+    ProjectionVerdict,
+    RestrictionWitness,
+    SheafSection,
+    build_projection as build_vortice_twerk_projection,
+    compile_projection as compile_vortice_twerk_projection,
+)
 
 __all__ = [
     "CompilerKernel",
@@ -59,4 +72,15 @@ __all__ = [
     "compile_publication_sheaf",
     "kokompile_kernel",
     "validate_kokompiled_kernel",
+    "CoherentProjection",
+    "ProjectionVerdict",
+    "RestrictionWitness",
+    "SheafSection",
+    "VORTICE_TWERK_AUTHOR",
+    "VORTICE_TWERK_SHEAF_SCHEMA_ID",
+    "VORTICE_TWERK_SOURCE_BRANCH",
+    "VORTICE_TWERK_SOURCE_REPOSITORY",
+    "VORTICE_TWERK_SOURCE_SHA",
+    "build_vortice_twerk_projection",
+    "compile_vortice_twerk_projection",
 ]
