@@ -17,7 +17,7 @@ SCHEMA_ID = "SIGIL4CPYTHON_VORTICE_TWERK_COHERENT_SHEAF_V1"
 AUTHOR = "Jara Juana Bermejo Vega / JJBV"
 SOURCE_REPOSITORY = "jbermejovega/sigilbook"
 SOURCE_BRANCH = "agent/sigilitas-vortice-taller-twerk-canonical-release-v1"
-SOURCE_SHA = "f376c1fbbd66cb0abe120aae9afbe51b5560d4dd"
+SOURCE_SHA = "e97224c0703279f9be053137808e0692c771f091"
 
 
 class ProjectionVerdict(str, Enum):
