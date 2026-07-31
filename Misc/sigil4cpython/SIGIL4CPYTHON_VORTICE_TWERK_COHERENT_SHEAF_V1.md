@@ -7,7 +7,7 @@ This dependency-free projection carries the canonical source model from:
 ```text
 jbermejovega/sigilbook
 agent/sigilitas-vortice-taller-twerk-canonical-release-v1
-f376c1fbbd66cb0abe120aae9afbe51b5560d4dd
+e97224c0703279f9be053137808e0692c771f091
 ```
 
 into the public experimental `sigil4cpython` mirror as distinct coherent
