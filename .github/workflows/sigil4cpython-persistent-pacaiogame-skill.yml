@@ -12,6 +12,7 @@ on:
       - 'Tools/sigil4cpython/test_diskotika_persistent_skill.py'
       - 'formal/sigil4cpython/PersistentPacaSkill.lean'
       - 'formal/sigil4cpython/lean-toolchain'
+      - 'formal/sigil4cpython/lake-manifest.json'
       - 'docs/SIGIL4CPYTHON_PERSISTENT_PACAIOGAME_SKILL_COMPILER_V1.md'
       - '.github/workflows/sigil4cpython-persistent-pacaiogame-skill.yml'
   push:
@@ -25,6 +26,7 @@ on:
       - 'Tools/sigil4cpython/test_diskotika_persistent_skill.py'
       - 'formal/sigil4cpython/PersistentPacaSkill.lean'
       - 'formal/sigil4cpython/lean-toolchain'
+      - 'formal/sigil4cpython/lake-manifest.json'
       - 'docs/SIGIL4CPYTHON_PERSISTENT_PACAIOGAME_SKILL_COMPILER_V1.md'
       - '.github/workflows/sigil4cpython-persistent-pacaiogame-skill.yml'
   workflow_dispatch:
@@ -73,7 +75,13 @@ jobs:
 
       - name: Compile canonical AST and kernels
         run: |
-          PYTHONPATH=Lib python - <<'PY'
+          python - <<'PY'
+          import sys
+
+          # In a CPython source checkout, setting PYTHONPATH=Lib before startup
+          # shadows the host stdlib. Append only after the interpreter starts.
+          sys.path.append('Lib')
+
           from sigil4cpython.persistent_pacaiogame_skill import (
               build_persistent_pacaiogame_skill_compiler,
               compile_persistent_pacaiogame_skill_compiler,
@@ -143,15 +151,17 @@ jobs:
           test: 'false'
           lint: 'false'
           use-github-cache: 'false'
+          use-mathlib-cache: 'false'
           lake-package-directory: formal/sigil4cpython
 
       - name: Kernel-check persistent PACA skill
-        run: lean formal/sigil4cpython/PersistentPacaSkill.lean
+        working-directory: formal/sigil4cpython
+        run: lean PersistentPacaSkill.lean
 
       - name: Reject proof placeholders
+        working-directory: formal/sigil4cpython
         run: |
-          if grep -Eiq '\b(sorry|admit)\b' \
-            formal/sigil4cpython/PersistentPacaSkill.lean; then
+          if grep -Eiq '\b(sorry|admit)\b' PersistentPacaSkill.lean; then
             echo 'Lean source contains a proof placeholder.'
             exit 1
           fi
@@ -169,7 +179,11 @@ jobs:
 
       - name: Assert plan-only fusion boundary
         run: |
-          PYTHONPATH=Lib python - <<'PY'
+          python - <<'PY'
+          import sys
+
+          sys.path.append('Lib')
+
           from sigil4cpython.persistent_pacaiogame_skill import (
               build_persistent_pacaiogame_skill_compiler,
               compile_persistent_pacaiogame_skill_compiler,
