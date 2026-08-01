@@ -40,7 +40,7 @@ concurrency:
 
 jobs:
   dependency-free:
-    name: Dependency-free plural compiler
+    name: Dependency-free plural compiler and Arakne boundary
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -96,6 +96,35 @@ jobs:
           assert payload['runtime_executed'] is False
           assert payload['deployment_executed'] is False
           print(payload['compiler_sha256'])
+          PY
+
+      - name: Assert Arakne and runtime authority boundary
+        run: |
+          python - <<'PY'
+          import sys
+
+          sys.path.append('Lib')
+
+          from sigil4cpython.persistent_pacaiogame_skill import (
+              build_persistent_pacaiogame_skill_compiler,
+              compile_persistent_pacaiogame_skill_compiler,
+          )
+
+          payload = compile_persistent_pacaiogame_skill_compiler(
+              build_persistent_pacaiogame_skill_compiler()
+          )
+          arakne = payload['arakne']
+          antorcha = payload['paca_antorcha']
+          quazris = payload['quazris']
+          assert arakne['git_merge_executed'] is False
+          assert arakne['branch_rewrite_executed'] is False
+          assert arakne['branch_identities_preserved'] is True
+          assert arakne['open_pr_authority_absorbed'] is False
+          assert antorcha['model_executed'] is False
+          assert antorcha['tensor_allocated'] is False
+          assert quazris['runtime_executed'] is False
+          assert payload['final_kapsyla'] is False
+          print('Arakne semantic fusion is witnessed; no physical branch merge ran.')
           PY
 
   pydantika-diskotika:
@@ -165,42 +194,3 @@ jobs:
             echo 'Lean source contains a proof placeholder.'
             exit 1
           fi
-
-  boundary:
-    name: Arakne and runtime authority boundary
-    needs: [dependency-free, pydantika-diskotika, lena-lean4]
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-
-      - name: Assert plan-only fusion boundary
-        run: |
-          python - <<'PY'
-          import sys
-
-          sys.path.append('Lib')
-
-          from sigil4cpython.persistent_pacaiogame_skill import (
-              build_persistent_pacaiogame_skill_compiler,
-              compile_persistent_pacaiogame_skill_compiler,
-          )
-
-          payload = compile_persistent_pacaiogame_skill_compiler(
-              build_persistent_pacaiogame_skill_compiler()
-          )
-          arakne = payload['arakne']
-          antorcha = payload['paca_antorcha']
-          quazris = payload['quazris']
-          assert arakne['git_merge_executed'] is False
-          assert arakne['branch_rewrite_executed'] is False
-          assert arakne['branch_identities_preserved'] is True
-          assert antorcha['model_executed'] is False
-          assert antorcha['tensor_allocated'] is False
-          assert quazris['runtime_executed'] is False
-          assert payload['final_kapsyla'] is False
-          print('Arakne semantic fusion is witnessed; no physical branch merge ran.')
-          PY
