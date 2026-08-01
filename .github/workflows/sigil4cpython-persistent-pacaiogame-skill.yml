@@ -1,0 +1,196 @@
+name: SIGIL4CPython persistent PACAIoGame skill
+
+on:
+  pull_request:
+    paths:
+      - 'Lib/sigil4cpython/persistent_pacaiogame_skill.py'
+      - 'Lib/sigil4cpython/__init__.py'
+      - 'Lib/test/test_sigil4cpython_persistent_pacaiogame_skill.py'
+      - 'Tools/sigil4cpython/persistent_pacaiogame_skill_models.py'
+      - 'Tools/sigil4cpython/test_persistent_pacaiogame_skill_models.py'
+      - 'Tools/sigil4cpython/diskotika_persistent_skill.py'
+      - 'Tools/sigil4cpython/test_diskotika_persistent_skill.py'
+      - 'formal/sigil4cpython/PersistentPacaSkill.lean'
+      - 'formal/sigil4cpython/lean-toolchain'
+      - 'formal/sigil4cpython/lake-manifest.json'
+      - 'docs/SIGIL4CPYTHON_PERSISTENT_PACAIOGAME_SKILL_COMPILER_V1.md'
+      - '.github/workflows/sigil4cpython-persistent-pacaiogame-skill.yml'
+  push:
+    paths:
+      - 'Lib/sigil4cpython/persistent_pacaiogame_skill.py'
+      - 'Lib/sigil4cpython/__init__.py'
+      - 'Lib/test/test_sigil4cpython_persistent_pacaiogame_skill.py'
+      - 'Tools/sigil4cpython/persistent_pacaiogame_skill_models.py'
+      - 'Tools/sigil4cpython/test_persistent_pacaiogame_skill_models.py'
+      - 'Tools/sigil4cpython/diskotika_persistent_skill.py'
+      - 'Tools/sigil4cpython/test_diskotika_persistent_skill.py'
+      - 'formal/sigil4cpython/PersistentPacaSkill.lean'
+      - 'formal/sigil4cpython/lean-toolchain'
+      - 'formal/sigil4cpython/lake-manifest.json'
+      - 'docs/SIGIL4CPYTHON_PERSISTENT_PACAIOGAME_SKILL_COMPILER_V1.md'
+      - '.github/workflows/sigil4cpython-persistent-pacaiogame-skill.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: persistent-pacaiogame-skill-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-free:
+    name: Dependency-free plural compiler and Arakne boundary
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+
+      - name: Compile dependency-free surfaces
+        run: |
+          python -m py_compile \
+            Lib/sigil4cpython/persistent_pacaiogame_skill.py \
+            Lib/test/test_sigil4cpython_persistent_pacaiogame_skill.py
+
+      - name: Run persistent skill compiler tests
+        run: |
+          TEST_FILE=Lib/test/test_sigil4cpython_persistent_pacaiogame_skill.py python - <<'PY'
+          import os
+          import runpy
+          import sys
+
+          test_file = os.environ['TEST_FILE']
+          sys.path.append('Lib')
+          sys.argv = [test_file, '-v']
+          runpy.run_path(test_file, run_name='__main__')
+          PY
+
+      - name: Compile canonical AST and kernels
+        run: |
+          python - <<'PY'
+          import sys
+
+          # In a CPython source checkout, setting PYTHONPATH=Lib before startup
+          # shadows the host stdlib. Append only after the interpreter starts.
+          sys.path.append('Lib')
+
+          from sigil4cpython.persistent_pacaiogame_skill import (
+              build_persistent_pacaiogame_skill_compiler,
+              compile_persistent_pacaiogame_skill_compiler,
+          )
+
+          payload = compile_persistent_pacaiogame_skill_compiler(
+              build_persistent_pacaiogame_skill_compiler()
+          )
+          assert payload['compile_state'] == 'ADMIT_PLAN_ONLY'
+          assert len(payload['canonical_artifacts']) == 3
+          assert payload['git_merge_executed'] is False
+          assert payload['runtime_executed'] is False
+          assert payload['deployment_executed'] is False
+          print(payload['compiler_sha256'])
+          PY
+
+      - name: Assert Arakne and runtime authority boundary
+        run: |
+          python - <<'PY'
+          import sys
+
+          sys.path.append('Lib')
+
+          from sigil4cpython.persistent_pacaiogame_skill import (
+              build_persistent_pacaiogame_skill_compiler,
+              compile_persistent_pacaiogame_skill_compiler,
+          )
+
+          payload = compile_persistent_pacaiogame_skill_compiler(
+              build_persistent_pacaiogame_skill_compiler()
+          )
+          arakne = payload['arakne']
+          antorcha = payload['paca_antorcha']
+          quazris = payload['quazris']
+          assert arakne['git_merge_executed'] is False
+          assert arakne['branch_rewrite_executed'] is False
+          assert arakne['branch_identities_preserved'] is True
+          assert arakne['open_pr_authority_absorbed'] is False
+          assert antorcha['model_executed'] is False
+          assert antorcha['tensor_allocated'] is False
+          assert quazris['runtime_executed'] is False
+          assert payload['final_kapsyla'] is False
+          print('Arakne semantic fusion is witnessed; no physical branch merge ran.')
+          PY
+
+  pydantika-diskotika:
+    name: Pydantika annotated types and Diskotika
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install tooling-only validators
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'pydantic>=2.13,<3' 'discopy==1.2.2'
+
+      - name: Compile tooling validators
+        run: |
+          python -m py_compile \
+            Tools/sigil4cpython/persistent_pacaiogame_skill_models.py \
+            Tools/sigil4cpython/test_persistent_pacaiogame_skill_models.py \
+            Tools/sigil4cpython/diskotika_persistent_skill.py \
+            Tools/sigil4cpython/test_diskotika_persistent_skill.py
+
+      - name: Run Pydantika round-trip validation
+        run: python Tools/sigil4cpython/test_persistent_pacaiogame_skill_models.py -v
+
+      - name: Run DisCoPy typed-composition validation
+        run: python Tools/sigil4cpython/test_diskotika_persistent_skill.py -v
+
+  lena-lean4:
+    name: Lena Lean4 kernel check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install pinned Lean validator
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          auto-config: 'false'
+          build: 'false'
+          test: 'false'
+          lint: 'false'
+          use-github-cache: 'false'
+          use-mathlib-cache: 'false'
+          lake-package-directory: formal/sigil4cpython
+
+      - name: Kernel-check persistent PACA skill
+        working-directory: formal/sigil4cpython
+        run: lean PersistentPacaSkill.lean
+
+      - name: Reject proof placeholders
+        working-directory: formal/sigil4cpython
+        run: |
+          if grep -Eiq '\b(sorry|admit)\b' PersistentPacaSkill.lean; then
+            echo 'Lean source contains a proof placeholder.'
+            exit 1
+          fi

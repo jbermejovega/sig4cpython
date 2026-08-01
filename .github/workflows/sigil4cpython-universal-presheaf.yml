@@ -1,0 +1,84 @@
+name: SIGIL4CPython universal presheaf
+
+on:
+  pull_request:
+    paths:
+      - 'Lib/sigil4cpython/universal_presheaf_pipeline.py'
+      - 'Lib/test/test_sigil4cpython_universal_presheaf_pipeline.py'
+      - 'Tools/sigil4cpython/universal_presheaf_models.py'
+      - 'Tools/sigil4cpython/test_universal_presheaf_models.py'
+      - 'docs/SIGIL4CPYTHON_PACA_ESTACA_UNIVERSAL_PRESHEAF_V1.md'
+      - '.github/workflows/sigil4cpython-universal-presheaf.yml'
+  push:
+    paths:
+      - 'Lib/sigil4cpython/universal_presheaf_pipeline.py'
+      - 'Lib/test/test_sigil4cpython_universal_presheaf_pipeline.py'
+      - 'Tools/sigil4cpython/universal_presheaf_models.py'
+      - 'Tools/sigil4cpython/test_universal_presheaf_models.py'
+      - 'docs/SIGIL4CPYTHON_PACA_ESTACA_UNIVERSAL_PRESHEAF_V1.md'
+      - '.github/workflows/sigil4cpython-universal-presheaf.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+
+      - name: Install tooling-only Pydantika
+        run: python -m pip install 'pydantic>=2.13,<3'
+
+      - name: Compile source surfaces
+        run: |
+          python -m py_compile Lib/sigil4cpython/universal_presheaf_pipeline.py
+          python -m py_compile Lib/test/test_sigil4cpython_universal_presheaf_pipeline.py
+          python -m py_compile Tools/sigil4cpython/universal_presheaf_models.py
+          python -m py_compile Tools/sigil4cpython/test_universal_presheaf_models.py
+
+      - name: Run dependency-free presheaf tests
+        run: |
+          TEST_FILE=Lib/test/test_sigil4cpython_universal_presheaf_pipeline.py python - <<'PY'
+          import os
+          import runpy
+          import sys
+          test_file = os.environ['TEST_FILE']
+          sys.path.append('Lib')
+          sys.argv = [test_file, '-v']
+          runpy.run_path(test_file, run_name='__main__')
+          PY
+
+      - name: Run Pydantika tooling tests
+        run: python Tools/sigil4cpython/test_universal_presheaf_models.py -v
+
+      - name: Assert plan-only authority boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('Lib/sigil4cpython/universal_presheaf_pipeline.py').read_text(encoding='utf-8')
+          required = (
+              'PYDANTIKA_LEDGER_VIEW_ONLY',
+              'git_merge_executed: bool = False',
+              'runtime_executed: bool = False',
+              'repository_mutated: bool = False',
+              'final_kapsyla: bool = False',
+          )
+          for token in required:
+              assert token in text, token
+          PY
+
+      - name: Boundary notice
+        run: |
+          echo 'Open PR epochs remain identity-distinct.'
+          echo 'Pydantika ledger merge is a view, not a Git merge.'
+          echo 'No CPython interpreter semantics or external repository are mutated.'

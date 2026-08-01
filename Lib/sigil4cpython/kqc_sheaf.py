@@ -13,7 +13,7 @@ from enum import Enum
 from hashlib import sha256
 import json
 import re
-from typing import Iterable, Mapping
+from typing import Mapping
 
 
 SCHEMA_ID = "STRIKK_KQC_PUBLICATION_SHEAF_V1"
