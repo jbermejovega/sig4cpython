@@ -1,11 +1,24 @@
+from importlib.util import module_from_spec, spec_from_file_location
+from pathlib import Path
+import sys
 import unittest
 
-from sigil4cpython.synthgothhub_coherent_projection import (
-    EXPECTED_END_LINE,
-    build_receipt,
-    validate_projection_document,
-    verify_fixed_point,
+MODULE_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "sigil4cpython"
+    / "synthgothhub_coherent_projection.py"
 )
+SPEC = spec_from_file_location("sigil4cpython_synthgothhub_projection_tested", MODULE_PATH)
+if SPEC is None or SPEC.loader is None:
+    raise RuntimeError(f"unable to load projection module from {MODULE_PATH}")
+MODULE = module_from_spec(SPEC)
+sys.modules[SPEC.name] = MODULE
+SPEC.loader.exec_module(MODULE)
+
+EXPECTED_END_LINE = MODULE.EXPECTED_END_LINE
+build_receipt = MODULE.build_receipt
+validate_projection_document = MODULE.validate_projection_document
+verify_fixed_point = MODULE.verify_fixed_point
 
 DOCUMENT = """projection SYNTHGOTHHUB_SIGIL4CPYTHON_PROJECTION_V1
 author Jara Juana Bermejo-Vega / JJBV
