@@ -9,7 +9,7 @@ from sigil4cpython.synthgothhub_coherent_projection import (
 
 DOCUMENT = """projection SYNTHGOTHHUB_SIGIL4CPYTHON_PROJECTION_V1
 author Jara Juana Bermejo-Vega / JJBV
-source sigilbook#695@5f5d0f0b776d34077a22e897d8ec68cab6637d42
+source sigilbook#695@3eaa72173eba1f91627c80b5e8359adeb140994e
 target jbermejovega/sigil4cpython
 section SECTION_SIGIL4CPYTHON_PUBLIC
 kernel SIGIL_PLURAL_UNIVERSAL_ABSTRAKTA_AESTHETIK_KERNEL_V1
@@ -39,7 +39,7 @@ class ProjectionTests(unittest.TestCase):
         self.assertIn("END_LINE_NOT_UNIQUE", errors)
 
     def test_source_head_drift_rejects(self):
-        errors = validate_projection_document(DOCUMENT.replace("5f5d0f0", "0000000"))
+        errors = validate_projection_document(DOCUMENT.replace("3eaa721", "0000000"))
         self.assertTrue(any(item.startswith("MISSING_LINE:source") for item in errors))
 
 
