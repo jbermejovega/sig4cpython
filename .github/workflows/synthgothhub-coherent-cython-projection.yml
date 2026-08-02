@@ -50,17 +50,7 @@ jobs:
 
       - name: Run dependency-free projection tests
         run: |
-          TEST_FILE=Lib/test/test_sigil4cpython_synthgothhub_coherent_projection.py \
-          python - <<'PY'
-          import os
-          import runpy
-          import sys
-
-          test_file = os.environ["TEST_FILE"]
-          sys.path.insert(0, "Lib")
-          sys.argv = [test_file, "-v"]
-          runpy.run_path(test_file, run_name="__main__")
-          PY
+          python Lib/test/test_sigil4cpython_synthgothhub_coherent_projection.py -v
 
       - name: Verify exact terminal end line
         run: |
