@@ -1,0 +1,176 @@
+name: SIGIL4CPython PACAPDG UAP persistent skill
+
+on:
+  pull_request:
+    paths:
+      - 'Lib/sigil4cpython/persistent_pacaiogame_skill.py'
+      - 'Lib/sigil4cpython/pacapdg_uap_persistent_skill.py'
+      - 'Lib/test/test_sigil4cpython_pacapdg_uap_persistent_skill.py'
+      - 'Tools/sigil4cpython/pacapdg_uap_persistent_skill_models.py'
+      - 'Tools/sigil4cpython/test_pacapdg_uap_persistent_skill_models.py'
+      - 'Tools/sigil4cpython/diskotika_pacapdg_uap.py'
+      - 'Tools/sigil4cpython/test_diskotika_pacapdg_uap.py'
+      - 'formal/sigil4cpython/PersistentPacaSkill.lean'
+      - 'formal/sigil4cpython/PersistentPacaSkillUAP.lean'
+      - 'formal/sigil4cpython/lean-toolchain'
+      - 'formal/sigil4cpython/lake-manifest.json'
+      - 'docs/SIGIL4CPYTHON_PACAPDG_UAP_PERSISTENT_PACAIOGAME_SKILL_V1.md'
+      - '.github/workflows/sigil4cpython-pacapdg-uap-persistent-skill.yml'
+  push:
+    paths:
+      - 'Lib/sigil4cpython/persistent_pacaiogame_skill.py'
+      - 'Lib/sigil4cpython/pacapdg_uap_persistent_skill.py'
+      - 'Lib/test/test_sigil4cpython_pacapdg_uap_persistent_skill.py'
+      - 'Tools/sigil4cpython/pacapdg_uap_persistent_skill_models.py'
+      - 'Tools/sigil4cpython/test_pacapdg_uap_persistent_skill_models.py'
+      - 'Tools/sigil4cpython/diskotika_pacapdg_uap.py'
+      - 'Tools/sigil4cpython/test_diskotika_pacapdg_uap.py'
+      - 'formal/sigil4cpython/PersistentPacaSkill.lean'
+      - 'formal/sigil4cpython/PersistentPacaSkillUAP.lean'
+      - 'formal/sigil4cpython/lean-toolchain'
+      - 'formal/sigil4cpython/lake-manifest.json'
+      - 'docs/SIGIL4CPYTHON_PACAPDG_UAP_PERSISTENT_PACAIOGAME_SKILL_V1.md'
+      - '.github/workflows/sigil4cpython-pacapdg-uap-persistent-skill.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pacapdg-uap-persistent-skill-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-free:
+    name: PACAPDG UAP dependency-free compiler
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+
+      - name: Compile dependency-free surfaces
+        run: |
+          python -m py_compile \
+            Lib/sigil4cpython/persistent_pacaiogame_skill.py \
+            Lib/sigil4cpython/pacapdg_uap_persistent_skill.py \
+            Lib/test/test_sigil4cpython_pacapdg_uap_persistent_skill.py
+
+      - name: Run PACAPDG UAP compiler tests
+        run: |
+          TEST_FILE=Lib/test/test_sigil4cpython_pacapdg_uap_persistent_skill.py python - <<'PY'
+          import os
+          import runpy
+          import sys
+
+          test_file = os.environ['TEST_FILE']
+          sys.path.append('Lib')
+          sys.argv = [test_file, '-v']
+          runpy.run_path(test_file, run_name='__main__')
+          PY
+
+      - name: Compile V2 candidate artifact family
+        run: |
+          python - <<'PY'
+          import sys
+
+          sys.path.append('Lib')
+
+          from sigil4cpython.pacapdg_uap_persistent_skill import (
+              build_pacapdg_uap_persistent_skill_bundle,
+              compile_pacapdg_uap_persistent_skill_bundle,
+          )
+
+          payload = compile_pacapdg_uap_persistent_skill_bundle(
+              build_pacapdg_uap_persistent_skill_bundle()
+          )
+          assert payload['compile_state'] == 'ADMIT_PLAN_ONLY'
+          assert len(payload['candidate_artifacts']) == 3
+          assert payload['candidate_promoted'] is False
+          assert payload['uap_execution_authorized'] is False
+          assert payload['git_merge_executed'] is False
+          assert payload['branch_rewrite_executed'] is False
+          assert payload['runtime_executed'] is False
+          assert payload['deployment_executed'] is False
+          assert payload['final_kapsyla'] is False
+          print(payload['bundle_sha256'])
+          PY
+
+  pydantika-diskotika:
+    name: Pydantika and Diskotika PACAPDG UAP validators
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install tooling-only validators
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'pydantic>=2.13,<3' 'discopy==1.2.2'
+
+      - name: Compile tooling validators
+        run: |
+          python -m py_compile \
+            Tools/sigil4cpython/pacapdg_uap_persistent_skill_models.py \
+            Tools/sigil4cpython/test_pacapdg_uap_persistent_skill_models.py \
+            Tools/sigil4cpython/diskotika_pacapdg_uap.py \
+            Tools/sigil4cpython/test_diskotika_pacapdg_uap.py
+
+      - name: Run Pydantika annotated validation
+        run: python Tools/sigil4cpython/test_pacapdg_uap_persistent_skill_models.py -v
+
+      - name: Run Diskotika composition validation
+        run: python Tools/sigil4cpython/test_diskotika_pacapdg_uap.py -v
+
+  lena-lean4:
+    name: Lena Lean4 PACAPDG UAP kernel check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install pinned Lean validator
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          auto-config: 'false'
+          build: 'false'
+          test: 'false'
+          lint: 'false'
+          use-github-cache: 'false'
+          use-mathlib-cache: 'false'
+          lake-package-directory: formal/sigil4cpython
+
+      - name: Kernel-check source and UAP lift
+        working-directory: formal/sigil4cpython
+        run: |
+          lean PersistentPacaSkill.lean
+          lean PersistentPacaSkillUAP.lean
+
+      - name: Reject proof placeholders
+        working-directory: formal/sigil4cpython
+        run: |
+          if grep -Eiq '\b(sorry|admit)\b' \
+            PersistentPacaSkill.lean \
+            PersistentPacaSkillUAP.lean; then
+            echo 'Lean source contains a proof placeholder.'
+            exit 1
+          fi
