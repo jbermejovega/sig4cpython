@@ -1,0 +1,77 @@
+name: SynthGothHub Coherent Cython Projection
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/synthgothhub-coherent-cython-projection.yml"
+      - "Lib/sigil4cpython/synthgothhub_coherent_projection.py"
+      - "Lib/test/test_sigil4cpython_synthgothhub_coherent_projection.py"
+      - "Tools/sigil4cpython/cython/synthgothhub_coherent_fixed_point.pyx"
+      - "Tools/sigil4cpython/projections/SYNTHGOTHHUB_SIGIL4CPYTHON_PROJECTION_V1.sigil"
+      - "docs/SIGIL4CPYTHON_SYNTHGOTHHUB_COHERENT_CYTHON_PROJECTION_V1.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sigil4cpython-synthgothhub-cython-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-projection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Cython tooling only
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "cython>=3,<4"
+
+      - name: Compile dependency-free runtime module
+        run: |
+          python -m py_compile \
+            Lib/sigil4cpython/synthgothhub_coherent_projection.py \
+            Lib/test/test_sigil4cpython_synthgothhub_coherent_projection.py
+
+      - name: Run dependency-free projection tests
+        run: |
+          python Lib/test/test_sigil4cpython_synthgothhub_coherent_projection.py -v
+
+      - name: Verify exact terminal end line
+        run: |
+          PROJECTION=Tools/sigil4cpython/projections/SYNTHGOTHHUB_SIGIL4CPYTHON_PROJECTION_V1.sigil
+          tail -n 1 "$PROJECTION" | grep -Fx \
+            'end SYNTHGOTHHUB_SIGIL4CPYTHON_PROJECTION_V1'
+          test "$(grep -Fxc 'end SYNTHGOTHHUB_SIGIL4CPYTHON_PROJECTION_V1' "$PROJECTION")" = 1
+
+      - name: Translate Cython source to C
+        run: |
+          cp Tools/sigil4cpython/cython/synthgothhub_coherent_fixed_point.pyx \
+            /tmp/synthgothhub_coherent_fixed_point.pyx
+          python -m cython -3 /tmp/synthgothhub_coherent_fixed_point.pyx
+          test -s /tmp/synthgothhub_coherent_fixed_point.c
+          test "$(sha256sum /tmp/synthgothhub_coherent_fixed_point.pyx | cut -d' ' -f1)" = \
+            "71245c28f42685dde8531a96647b2c508517cd9885ac6492f450beb721560bfb"
+
+      - name: Enforce CPython semantic boundary
+        run: |
+          ! grep -REn \
+            'Py_Initialize|Py_Finalize|PyEval_EvalCode|eval\(|exec\(|git push|gh pr merge' \
+            Lib/sigil4cpython/synthgothhub_coherent_projection.py \
+            Tools/sigil4cpython/cython/synthgothhub_coherent_fixed_point.pyx \
+            Tools/sigil4cpython/projections/SYNTHGOTHHUB_SIGIL4CPYTHON_PROJECTION_V1.sigil
