@@ -39,5 +39,6 @@ def test_transport_is_deprecated_and_replay_is_canonical():
 def test_source_epoch_is_exact():
     value = module.build_pacacore_standard_model_projection()
     assert value.source_pull_request == 750
-    assert value.source_sha == "3d576e1f70459e4586463bdb2b5c3bdfd7c5c185"
-    assert value.source_bundle_sha256 == "20b3c73772fd530828a59d09fb0fa329fb149b920c8286fb2340c66053dfe4bc"
+    assert value.source_sha == "29d71ec6c40c1ccf43a0873140b65085b99e6d2b"
+    assert value.source_bundle_sha256 == "5b343a2fffb3f25e81567e42072b9f5cdbf38bd049f0496b4dea980b22e0aa05"
+    assert value.source_replay_tip == "b73c37879d7b7f9c3fea2b4b89d53848333c204adfeda6169dd595444c524261"
