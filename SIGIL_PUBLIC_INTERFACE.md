@@ -78,14 +78,45 @@ Universal Abstract Binders preserve context, witnesses and lineage, compose capa
 
 JIT compilers are sandbox-gated. MLIR lowering remains external to CPython and may reach CPython only through this public boundary.
 
+## Primitive KLI / QLI projection
+
+The private canonical source now exposes a source-only primitive interface profile identified as:
+
+```text
+SIGIL_PRIMITIVE_TYPE_INTERFACE_KLI_QLI_POLYTOPAL_V1
+```
+
+Its public compatibility projection is intentionally narrow:
+
+```text
+SIGIT
+  -> PrimitiveTypeInterface[Primitive ∩ Plural ∩ QUNO]
+  -> KLI typed boundary
+  -> QLI RuleZero equalizer tower
+  -> Python runtime IR
+  -> documented CPython public API
+```
+
+The QLI profile uses exact capability intersection and carries no identity or authority transport. Its recursive source shape is:
+
+```text
+QLI[QLI[QLI[CLI[CLI[CLIC[VOID_TYPED_CLI]]]]]]
+```
+
+KLI may carry cubical/polytopal, sheaf-boundary, physics-model, or other domain-specific typed metadata on the SIGIL side. Such metadata is **not** interpreted by CPython and does not widen the CPython ABI surface. CPython receives only the already-projected public runtime/native interface.
+
+This keeps the public boundary stable even when the private SIGIL type system gains richer geometric or categorical structure.
+
 ## Repository semantics
 
 A semantic SIGIL `FUSE` is not a Git merge. A semantic `DEFUSE` is not a Git revert or history rewind. Repository effects remain explicit and separate from typed semantic binding.
+
+`main` is the public stabilization/version lineage for this carrier. This does not imply physical collapse, deletion, or identity-quotienting of historical branches.
 
 ## Upstream compatibility
 
 This fork tracks CPython as an upstream implementation and compatibility target. Public SIGIL interfaces should be refreshed against upstream changes without importing private CPython implementation details into the stable contract.
 
-The normative SIGIL-side schema, source pins and validation receipts are maintained in the private canonical source repository.
+The normative SIGIL-side schema, source pins, domain-specific KLI metadata, and validation receipts are maintained in the private canonical source repository.
 
 PIORNALEGO ES CANON.
