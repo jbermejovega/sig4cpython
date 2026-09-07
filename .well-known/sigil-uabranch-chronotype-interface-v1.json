@@ -1,0 +1,112 @@
+{
+  "schema_id": "SIGIL_UABRANCH_CHRONOTYPE_PUBLIC_INTERFACE_V1",
+  "version": "1.0.0",
+  "status": "PUBLIC_SOURCE_BOUND_INTERFACE",
+  "canon": "PIORNALEGO_ES_CANON",
+  "successor_of": "SIGILBOOK_SIGIL4CPYTHON_CPYTHON_PUBLIC_INTERFACE_V1",
+  "carrier": {
+    "repository": "jbermejovega/sigil4cpython",
+    "repository_id": 1230963220,
+    "source_parent_sha": "7824dbd084f18c08d363c448c0fef4f465a6ca07",
+    "role": "PUBLIC_INTERFACE_CARRIER"
+  },
+  "upstream": {
+    "repository": "python/cpython",
+    "repository_id": 81598961,
+    "observed_main_sha": "d125f009dc2a698de62deb11a0c50d3ef8e33d62",
+    "role": "READ_ONLY_UPSTREAM",
+    "write_allowed": false,
+    "private_api_is_canonical": false,
+    "unstable_api_is_canonical": false
+  },
+  "cpython_branch_snapshot": {
+    "3.10": "22344e9d4ba2a966ca17c9a1ca78c4c1defc3f09",
+    "3.11": "9eaf48a56547872b86de5cecbaa7edd3279159ed",
+    "3.12": "e11441508a4474205fa168d63b3da0be86e5b6eb",
+    "3.13": "19693afe65ec2620e4930f5cad0fe9cb08364f6f",
+    "3.14": "a9152fbef2dd32dc59b291bad80a92411eb7a2cf",
+    "3.15": "02f55f30a3d80733bd336ea15e59e88139528b9c",
+    "main": "d125f009dc2a698de62deb11a0c50d3ef8e33d62"
+  },
+  "cpython_public_boundary": {
+    "documented_public_api_only": true,
+    "stable_tracks": {
+      "abi3": {
+        "sigil_floor": "3.10",
+        "free_threaded": false,
+        "macro": "Py_LIMITED_API=0x030A0000"
+      },
+      "abi3t": {
+        "sigil_floor": "3.15",
+        "free_threaded": true,
+        "macro": "Py_TARGET_ABI3T=0x030F0000"
+      }
+    },
+    "direct_internal_headers": false,
+    "direct_cpython_subdir_headers": false,
+    "private_symbol_prefix__Py": false,
+    "unstable_symbol_prefix_PyUnstable": false
+  },
+  "branch_contract": {
+    "physical_root_branch": "main",
+    "universal_abstract_family": "SIGILBOOK_ALL_BRANCHES",
+    "coverage_policy": "ALL_GIT_REFS_BY_SOURCE_BOUND_LIFT",
+    "physical_merge_required": false,
+    "branch_identity_quotient": false,
+    "history_rewrite": false,
+    "chronotype_fields": [
+      "repository",
+      "branch_ref",
+      "head_sha",
+      "epoch",
+      "cpython_channel",
+      "cpython_sha",
+      "public_interface_sha"
+    ]
+  },
+  "granada_normal_form": {
+    "layers": ["PROCESS", "RELATION", "UNIVERSAL_ABSTRACT"],
+    "motifs": ["MOTHER", "MAIDEN", "CRONE"],
+    "motifs_are_contextual": true,
+    "motifs_are_permanent_bearer_identities": false,
+    "semantic_atlas_roots_are_git_branches": false
+  },
+  "plural_interface_contract": {
+    "unary_interactions": "FREE_CATEGORY_ON_INTERACTION_QUIVER",
+    "multiary_interactions": "COLORED_OPERAD_OR_MULTICATEGORY",
+    "interface_subcategory_exists_by_construction": true,
+    "every_plural_type_is_literally_a_classical_category": false,
+    "univalence_creates_category_structure": false,
+    "univalence_transport_requires_equivalence_witness": true
+  },
+  "crone_language": {
+    "language_id": "SIGIL_CRONE_LANGUAGE_V1",
+    "all_types_interactive": true,
+    "skill_transfer_modes": [
+      "TEACH",
+      "DEMONSTRATE",
+      "INTERACTIVE_HANDSHAKE",
+      "DELEGATE_WITH_WITNESS"
+    ],
+    "skill_transfer_fuses_bearers": false,
+    "skill_transfer_splits_bearers": false,
+    "skill_transfer_dissolves_bearers": false,
+    "skill_transfer_transports_identity": false,
+    "skill_transfer_transports_authority": false
+  },
+  "topological_constant_scope": {
+    "sigil_scope": "SIGIL_UNIVERSAL_ABSTRACT_CHIRAL_LAYER",
+    "admitted_witness_kinds": [
+      "JONES_POLYNOMIAL",
+      "LINKING_NUMBER",
+      "INTERSECTION_NUMBER"
+    ],
+    "promoted_as_general_physical_conservation_laws": false
+  },
+  "repository_law": {
+    "semantic_foliation_is_git_merge": false,
+    "semantic_root_is_force_push": false,
+    "upstream_sync_is_automatic": false,
+    "source_lineage_preserved": true
+  }
+}
